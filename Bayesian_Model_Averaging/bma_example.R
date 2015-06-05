@@ -1,0 +1,52 @@
+#------------------------------------------------_#
+#Bayesian Model Averaging Example for Code Rodeo 8/23/13
+#This method should supplant stepwise regression as our default variable 
+#selection procedure.
+#Example prepared using vchp dataset of capacities.
+#------------------------------------------------_#
+
+library(foreign)
+library(BMA)
+vchp<-read.dta("vchpdata.dta")
+
+#Add a couple of logarithm variables, just for laughs
+vchp$lnOAT=log(vchp$OAT)
+vchp$lnAHflow=log(vchp$AHflow)
+
+#Select only the rows we want for the regression
+rows<-which(vchp$tonnage==2 & vchp$sys_on==1 & vchp$ER_on==0 & vchp$fint==1)
+vchp<-vchp[rows,]
+
+#bicreg wants a matrix of predictors x, and a vector of response y
+x<-as.matrix(subset(vchp,select=c(OAT,AHflow,OAT2,RAT2,AHflow2,OATAHflow,OAT3,AHflow3,RATAHflow,OATRATAHflow,lnOAT,lnAHflow)))
+y<-as.matrix(subset(vchp,select=c(cap)))
+
+#Make some pairwise scatterplots to see what we're dealing with
+par(mfrow=c(4,3))
+par(mar=c(2,0,2,0))
+for(i in 1:12) {
+    plot(x[,i],y,cex=.3,xlab="",main=colnames(x)[i])
+}
+
+#Perform the Bayesian Model Averaging
+bma.mod<-bicreg(x,y)
+
+#Look at the results
+summary(bma.mod)
+plot(bma.mod)
+par(mfrow=c(1,1))
+imageplot.bma(bma.mod)
+
+#Grab the Median model
+vars<-which(bma.mod$probne0>50)
+colnames(x)[vars]
+
+#Fit that model, and look at the diagnostics
+lm.final<-lm(y~x[,vars])
+summary(lm.final)
+par(mfrow=c(2,2))
+par(mar=c(5,4,4,2))
+plot(lm.final)
+
+#Doesn't look all that great.  Unfortunately, Bayesian Model Averaging doesn't help with 
+#model specification problems.

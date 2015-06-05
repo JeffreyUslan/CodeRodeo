@@ -1,0 +1,11 @@
+grepping to find things inside of files
+
+linux tips and tricks
+
+headers, preprocessor, etc.
+http://gcc.gnu.org/onlinedocs/gcc-2.95.3/cpp_1.html#SEC3
+
+
+fix cdx command (live help session) -- the csv file does not appear to be updating properly
+
+

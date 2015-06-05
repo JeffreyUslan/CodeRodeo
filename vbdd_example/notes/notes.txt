@@ -1,0 +1,2 @@
+This is an example of how to conduct a VBDD analysis.
+The Stata help file, help vbdd, reference files in this location.
