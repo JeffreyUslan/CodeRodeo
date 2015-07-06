@@ -1,7 +1,7 @@
 # install.packages("RSQLite")
 library("RSQLite")
 library(nycflights13)
-
+library("dplyr")
 #make a database
 my_db <- src_sqlite("my_db.sqlite3", create = T)
 
